@@ -1,0 +1,9 @@
+{
+    "std": {
+        "terminal": {
+            "print()": "prints text to console",
+            "write()": "prints text to console and awaits answer (y/n for example)",
+            "error()": "manually throws an error"
+        }
+    }
+}
