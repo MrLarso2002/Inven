@@ -24,6 +24,7 @@
 
 // Arrays
 :[type] // for example :[str]
+//empty for any
 //for sets $[] where $ means unique
 
 // Types inside Functions
