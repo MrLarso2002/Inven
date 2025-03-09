@@ -24,7 +24,7 @@
 
 // Arrays
 :[type] // for example :[str]
-//empty for any
+:arr // an array that can hold any type. equivalent to :[any] 
 //for sets $[] where $ means unique
 
 // Types inside Functions
