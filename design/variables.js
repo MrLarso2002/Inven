@@ -1,18 +1,17 @@
-// type name = value
-
-const { set } = require("express/lib/application");
-
-// local variables (default)
+// Local variables (default)
 local variable;
 lo variable;
 
-// scoped variables
+// Scoped variables
 scope variable;
 sc variable;
 
-// you can only export local variables
+// You can only export local variables
 package variable;
 
+// Variables are immutable by default, you can add mut to make the mutable
+local mut variable;
+scope mut variable;
 
 // functions are by default local, you dont have to declare it but you can if you want to.
 func () {};
