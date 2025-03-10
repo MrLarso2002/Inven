@@ -1,8 +1,8 @@
-// Local variables (default)
+// Local variables (default; this variables are accessible anywhere in the file)
 local variable;
 lo variable;
 
-// Scoped variables
+// Scoped variables (this variables are accessible in the current and sub scopes)
 scope variable;
 sc variable;
 
