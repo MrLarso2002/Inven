@@ -1,5 +1,7 @@
 // **Module System Documentation**
 
+const { NAME_SPACE } = require("blockly/core/utils/xml");
+
 // 1. **Exporting Modules**
 
 package function;
@@ -53,3 +55,9 @@ std.LocalDateTime.get();  // This will throw an error because '@std_' only impor
 
 // Correct usage after importing the direct children of '@std_'
 LocalDateTime.get();  // This works because the 'LocalDateTime' is directly imported from '@std_'
+
+
+unpack name;
+unpack name_;
+unpack @name_;
+unpack nested.thing.yay;
