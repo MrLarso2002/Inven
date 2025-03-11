@@ -30,7 +30,7 @@ peg::parser!{
 pub fn main() {
 // e
 }
-
+/* 
 #[cfg(test)]
 mod tests {
   use super::*;
@@ -39,4 +39,4 @@ mod tests {
   fn unpack() {
 
   }
-}
+}*/
