@@ -1,12 +1,7 @@
-// **Module System Documentation**
-
-const { NAME_SPACE } = require("blockly/core/utils/xml");
-
-// 1. **Exporting Modules**
-
-package function;
-
-// Defining a local module with nested functions
+# Module System Documentation
+# 1. Exporting Modules
+Defining a local module with nested functions:
+```lua
 local example = {
     module: {
         nested: {
@@ -15,15 +10,23 @@ local example = {
         }
     }
 };
-
-// Export the 'example' module
+```
+Export the 'example' module
+```js
 package example;
+```
 
-// 2. **Importing Modules**
-
-unpack function; // Imports the 'function' module
-unpack example.module.nested; // Imports the 'nested' object from 'example'
-
+# 2. Importing Modules
+Import the 'function' module:
+```lua
+unpack function;
+```
+Import the 'nested' object from 'example':
+```lua
+unpack example.module.nested;
+```
+Unifnished:
+---
 // Calling functions after importing
 function();          // Calls the function directly
 nested.funcA();      // Calls 'funcA' from 'nested'
