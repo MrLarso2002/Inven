@@ -2,7 +2,7 @@
 peg::parser!{
   grammar inven_parser() for str {
     pub rule import() -> (String, Option<String>)
-      = "unpack" _ module:module_identifier() _ modulechild:module_sub_identifier()? _ ";" { (module, modulechild) }
+      = "unpack" __ module:module_identifier() _ modulechild:module_sub_identifier()? _ ";" { (module, modulechild) }
       pub rule importmin() -> String
         = "unpack" _ module:module_identifier() _ ";" { module }
 
@@ -16,13 +16,14 @@ peg::parser!{
 
     rule module_sub_identifier() -> String
       = precedence!{
-        n:$("{" _ $( (identifier() (_ "as" identifier())? ) ** "," ) _ "}" ) {n.to_owned()}
+        n:$("{" _ $( (identifier() (_ "as" __ identifier())? ) ** (_ "," _) ) _ "}" ) {n.to_owned()}
         --
         n:$("{" _ "*" _ "}") {n.to_owned()}
       }
       / expected!("sub module identifier")
 
     rule _() = quiet!{[' ' | '\t']*}
+    rule __() = quiet!{[' ' | '\t']+}
   }
 }
 
