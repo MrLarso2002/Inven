@@ -21,7 +21,17 @@ peg::parser!{
     // 2. LITERALS / VALUES
 
     // (Placeholder for future rules handling strings, arrays, objects, etc.)
+    rule lit_string() -> String
+      = quiet!{ n:$(
+        "\""
+        ['a'..='z' | ]
+      )}
+    
+    rule lit_num() -> String
+      = quiet!{ n:$(
 
+      )}
+    
 
 
     // 3. IDENTIFIER RULES
