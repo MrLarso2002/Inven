@@ -3,8 +3,6 @@ peg::parser!{
   grammar inven_parser() for str {
     pub rule import() -> (String, Option<String>, bool)
       = "unpack" __ pkg_manager:("box" ":")? module:module_identifier() _ modulechild:module_sub_identifier()? _ ";" { (module, modulechild, pkg_manager.is_some()) }
-      pub rule importmin() -> String
-        = "unpack" __ module:module_identifier() _ ";" { module }
 
     // TODO: finish variable declaration.
     // for the value, its currently set to identifier rule,this is placeholder cuz this will be a bit harder to implement for all the possible cases [] {} "" --.
@@ -53,16 +51,45 @@ pub fn main() {
 mod tests {
   use super::*;
 
+  // Unpack
+  // TODO: Make Multiline possible. EOF issue
   #[test]
   fn unpack() {
-    
-    // TODO: Make Multiline possible. EOF issue
     let res = inven_parser::import("unpack module;").expect("Should be Ok");
     assert_eq!(res.0, "module");
     assert_eq!(res.1, None);
     assert_eq!(res.2, false); // box:
   }
+  #[test]
+  fn unpack_nested() {
+    let res = inven_parser::import("unpack module.nested;").expect("Should be Ok");
+    assert_eq!(res.0, "module.nested");
+    assert_eq!(res.1, None);
+    assert_eq!(res.2, false);
+  }
+  #[test]
+  fn unpack_curly() {
+    let res = inven_parser::import("unpack module { child };").expect("Should be Ok");
+    assert_eq!(res.0, "module");
+    //assert_eq!(res.1, Some("child")); rust being annoying with types
+    assert_eq!(res.2, false);
+  }
+  #[test]
+  fn unpack_box() {
+    let res = inven_parser::import("unpack box:module;").expect("Should be Ok");
+    assert_eq!(res.0, "module");
+    assert_eq!(res.1, None);
+    assert_eq!(res.2, true);
+  }
+  #[test]
+  fn unpack_extended() {
+    let res = inven_parser::import("unpack box:module.nested { child as cat };").expect("Should be Ok");
+    assert_eq!(res.0, "module.nested");
+    //assert_eq!(res.1, Some("child as cat")); rust being annoying with types
+    assert_eq!(res.2, true);
+  }
 
+  // Variables
   #[test]
   fn var_decl() {
     let res = inven_parser::declaration("local mut var:int{64} = value;").expect("Should be Ok");
