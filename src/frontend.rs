@@ -4,13 +4,21 @@ peg::parser!{
     pub rule import() -> (String, Option<String>, bool)
       = "unpack" __ pkg_manager:("box" ":")? module:module_identifier() _ modulechild:module_sub_identifier()? _ ";" { (module, modulechild, pkg_manager.is_some()) }
       pub rule importmin() -> String
-        = "unpack" _ module:module_identifier() _ ";" { module }
+        = "unpack" __ module:module_identifier() _ ";" { module }
 
-    // TODO: finish variable declaration
+    // TODO: finish variable declaration.
+    // for the value, its currently set to identifier rule,this is placeholder cuz this will be a bit harder to implement for all the possible cases [] {} "" --.
+    // The types are set to be very broad. ur welcome to setting up ur specific array thing, but this should be more uniform. plus we allow custom types so..
     pub rule declaration() -> (String, bool)
-      = variable:variable_type() __ mutable:("mut")? variable:identifier() _ (":" _ "type")? "="? _ ";" { (variable, mutable.is_some()) }
+      = variable:variable_type() __ mutable:("mut")? __ variable:identifier() (":" _ data_type:types())? _ ("=" _ value:identifier())? _ ";" { (variable, mutable.is_some()) }
 
+    // TODO: Finish the entire logic. there should prob be a rule for parantehthis and values you can assign so we dont have to rewrite
+    pub rule expression() -> (String)
+      = expression:identifier() _ "()"? _ ";" { expression }
 
+    rule types() -> String
+    = quiet!{ n:$((['a'..='z' | 'A'..='Z' | '0'..='9']+)("{" ("8"/"18"/"32"/"64"/"128"/"any") "}")?) {n.to_owned()}}
+      / expected!("type")
     rule variable_type() -> String
       = quiet!{ n:$((("local" / "lo") / ("scope" / "sc"))) {n.to_owned()}} 
       / expected!("variable")
@@ -57,8 +65,8 @@ mod tests {
 
   #[test]
   fn var_decl() {
-    let res = inven_parser::declaration("local test =;").expect("Should be Ok");
-    assert_eq!(res.0, "test");
-    assert_eq!(res.1, false);
+    let res = inven_parser::declaration("local mut var:int{64} = value;").expect("Should be Ok");
+    assert_eq!(res.0, "var");
+    assert_eq!(res.1, true);
   }
 }
