@@ -3,16 +3,18 @@ peg::parser!{
   grammar inven_parser() for str {
     pub rule import() -> (String, Option<String>)
       = "unpack" _ module:module_identifier() _ modulechild:module_sub_identifier()? _ ";" { (module, modulechild) }
+      pub rule importmin() -> String
+        = "unpack" _ module:module_identifier() _ ";" { module }
 
     rule identifier() -> String
       = quiet!{ n:$(['a'..='z' | 'A'..='Z' | '_']['a'..='z' | 'A'..='Z' | '0'..='9' | '_']*) {n.to_owned()}}
       / expected!("identifier")
 
     rule module_identifier() -> String
-      = quiet!{ n:$(['a'..='z' | 'A'..='Z' | '_']['a'..='z' | 'A'..='Z' | '0'..='9' | '_' ]** ".") {n.to_owned()}}
+      = quiet!{ n:$((['a'..='z' | 'A'..='Z' | '_' | '@']['a'..='z' | 'A'..='Z' | '0'..='9' | '_' ]*)** ".") {n.to_owned()}}
       / expected!("module identifier")
 
-    rule module_sub_identifier() -> (String)
+    rule module_sub_identifier() -> String
       = precedence!{
         n:$("{" _ $( (identifier() (_ "as" identifier())? ) ** "," ) _ "}" ) {n.to_owned()}
         --
