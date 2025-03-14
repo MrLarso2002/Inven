@@ -39,7 +39,9 @@ mod tests {
   #[test]
   fn unpack() {
     
-    let res = inven_parser::import("unpack module;").expect("Should be Ok");
+    // TODO: Make Multiline possible. EOF issue
+    let res = inven_parser::import("unpack module;
+    unpack module;").expect("Should be Ok");
     assert_eq!(res.0, "module");
     assert_eq!(res.1, None);
     assert_eq!(res.2, false); // box:
