@@ -44,5 +44,5 @@ For sets `$[]` where $ means unique
 ```lua
 func name(argument:argumentType):returnType when(){}
 ```
-argumentType is the type the arguments need to be
+argumentType is the type the arguments need to be\
 returnType is what it returns
