@@ -3,3 +3,14 @@ Welcome to the Inven repo! Inven, comes from Invention, which is what powers the
 
 
 (bunch of bs)
+
+
+## Syntax Progress
+- [x] unpack
+- [ ] variable declaration
+- [ ] function declaration
+- [ ] comments
+- [ ] general files
+...
+## JIT Progress
+...
