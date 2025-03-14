@@ -1,34 +1,61 @@
 // our parser ig for now
 peg::parser!{
   grammar inven_parser() for str {
+
+
+    // 1. MAIN EXPRESSIONS
+
+    // Imports: Importing packages
     pub rule import() -> (String, Option<String>, bool)
       = "unpack" __ pkg_manager:("box" ":")? module:module_identifier() _ modulechild:module_sub_identifier()? _ ";" { (module, modulechild, pkg_manager.is_some()) }
 
-    // TODO: finish variable declaration.
-    // for the value, its currently set to identifier rule,this is placeholder cuz this will be a bit harder to implement for all the possible cases [] {} "" --.
-    // The types are set to be very broad. ur welcome to setting up ur specific array thing, but this should be more uniform. plus we allow custom types so..
+    // Var Declaration: Declare vars (UNFINISHED)
     pub rule declaration() -> (String, bool)
       = variable:variable_type() __ mutable:("mut")? __ variable:identifier() (":" _ data_type:types())? _ ("=" _ value:identifier())? _ ";" { (variable, mutable.is_some()) }
 
-    // TODO: Finish the entire logic. there should prob be a rule for parantehthis and values you can assign so we dont have to rewrite
+    // Expressions: placeholder for function calls, etc. (UNFINISHED)
     pub rule expression() -> (String)
       = expression:identifier() _ "()"? _ ";" { expression }
 
-    rule types() -> String
-    = quiet!{ n:$((['a'..='z' | 'A'..='Z' | '0'..='9']+)("{" ("8"/"18"/"32"/"64"/"128"/"any") "}")?) {n.to_owned()}}
-      / expected!("type")
-    rule variable_type() -> String
-      = quiet!{ n:$((("local" / "lo") / ("scope" / "sc"))) {n.to_owned()}} 
-      / expected!("variable")
 
+    // 2. LITERALS / VALUES
+
+    // (Placeholder for future rules handling strings, arrays, objects, etc.)
+
+
+
+    // 3. IDENTIFIER RULES
+
+    // Rules for what function and variable names are allowed as
     rule identifier() -> String
-      = quiet!{ n:$(['a'..='z' | 'A'..='Z' | '_']['a'..='z' | 'A'..='Z' | '0'..='9' | '_']*) {n.to_owned()}}
+      = quiet!{ n:$(
+            ['a'..='z' | 'A'..='Z' | '_']
+            ['a'..='z' | 'A'..='Z' | '0'..='9' | '_']*
+        ) { n.to_owned() } }
       / expected!("identifier")
 
+    // Rules for what types can look like (UNFINISHED)
+    rule types() -> String
+      = quiet!{ n:$(
+            (['a'..='z' | 'A'..='Z' | '0'..='9']+)
+            ("{" ("8"/"18"/"32"/"64"/"128"/"any") "}")?
+          ) { n.to_owned() } }
+      / expected!("type")
+
+    // Rules for what variables can be declared with
+    rule variable_type() -> String
+      = quiet!{ n:$((("local" / "lo") / ("scope" / "sc"))) { n.to_owned() } }
+      / expected!("variable")
+
+      
+    // Rules for what modules are allowed to be written as
     rule module_identifier() -> String
-      = quiet!{ n:$((['a'..='z' | 'A'..='Z' | '_' | '@']['a'..='z' | 'A'..='Z' | '0'..='9' | '_' ]*)** ".") {n.to_owned()}}
+      = quiet!{ n:$(
+            (identifier()*) ** "."
+          ) { n.to_owned() } }
       / expected!("module identifier")
 
+    // Rules for the module syntax
     rule module_sub_identifier() -> String
       = precedence!{
         n:$("{" _ $( (identifier() (_ "as" __ identifier())? ) ** (_ "," _) ) _ "}" ) {n.to_owned()}
@@ -37,7 +64,13 @@ peg::parser!{
       }
       / expected!("sub module identifier")
 
+
+    // 4. UTILITY RULES
+
+    // Optional whitepace (zero or more)
     rule _() = quiet!{[' ' | '\t']*}
+
+    // Obligatory whitespace (one or more)
     rule __() = quiet!{[' ' | '\t']+}
   }
 }
@@ -71,7 +104,7 @@ mod tests {
   fn unpack_curly() {
     let res = inven_parser::import("unpack module { child };").expect("Should be Ok");
     assert_eq!(res.0, "module");
-    //assert_eq!(res.1, Some("child")); rust being annoying with types
+    assert_eq!(res.1, Some("{ child }".to_string()));
     assert_eq!(res.2, false);
   }
   #[test]
@@ -85,7 +118,7 @@ mod tests {
   fn unpack_extended() {
     let res = inven_parser::import("unpack box:module.nested { child as cat };").expect("Should be Ok");
     assert_eq!(res.0, "module.nested");
-    //assert_eq!(res.1, Some("child as cat")); rust being annoying with types
+    assert_eq!(res.1, Some("{ child as cat }".to_string()));
     assert_eq!(res.2, true);
   }
 
