@@ -9,7 +9,7 @@ peg::parser!{
       / expected!("identifier")
 
     rule module_identifier() -> String
-      = quiet!{ n:$(['a'..='z' | 'A'..='Z' | '_' | '@']['a'..='z' | 'A'..='Z' | '0'..='9' | '_' ]** ".") {n.to_owned()}}
+      = quiet!{ n:$(['a'..='z' | 'A'..='Z' | '_']['a'..='z' | 'A'..='Z' | '0'..='9' | '_' ]** ".") {n.to_owned()}}
       / expected!("module identifier")
 
     rule module_sub_identifier() -> (String)

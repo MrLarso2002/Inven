@@ -11,56 +11,61 @@ local example = {
     }
 };
 ```
-Export the 'example' module
+Export the `example` module
 ```js
 package example;
 ```
 
 # 2. Importing Modules
-Import the 'function' module:
+Import the `example` module:
 ```lua
-unpack function;
+unpack example;
 ```
-Import the 'nested' object from 'example':
+Import the `nested` object from `example`
 ```lua
 unpack example.module.nested;
 ```
-Unifnished:
----
-// Calling functions after importing
-function();          // Calls the function directly
-nested.funcA();      // Calls 'funcA' from 'nested'
-nested.funcB();      // Calls 'funcB' from 'nested'
+Call `funcA` and `funcB` from `nested`
+```lua
+nested.funcA();
+nested.funcB();
+```
+Calling functions directly after importing
+```lua
+unpack example.module.nested.funcA;
+funcA();
+```
 
+# 3. Importing from other sources
+## 3.1 Native modules
+Native modules can be accessed with std, it contains all native modules.
+```lua
+unpack std.module;
+```
 
-// 3. **Importing All Modules (Full Examples)**
+## 3.2 The package manager
+To import a package from the package manager:
+```lua
+unpack box:module;
+```
+These modules are located in `/packages`.
 
-// Importing a module along with all its children
-unpack module; // Imports the 'module' and all its children into the scope
+# 4. Other import syntax
+## 4.1 Multi import
+Adding one or more nested elements into the scope directly.
+```lua
+unpack example.module.nested { funcA, funcB };
+```
+That will add both `funcA` and `funcB` into the scope.
+Making it `{ * }` will add all children into scope, this is not recomended but possible;
 
-// Importing a native environment module (e.g., @std_, @net, etc.)
-unpack @module; // Imports a native module (e.g., @std_, @net, @socket, @os, @math)
-
-// Importing from the package manager
-unpack box:module; // Imports a module from the package manager. modules located in './packages'
-
-
-// 4. **Native Environment Modules**
-
-unpack @std_; // Imports the '@std_' module from the native environment
-unpack @net;  // Imports the '@net' module from the native environment
-
-// Using imported functions from native modules
-net.get('url', func() {...});  // Calls a function from the '@net' module
-
-// Example with '@std_' module
-std.LocalDateTime.get();  // This will throw an error because '@std_' only imports direct children, not 'std' itself.
-
-// Correct usage after importing the direct children of '@std_'
-LocalDateTime.get();  // This works because the 'LocalDateTime' is directly imported from '@std_'
-
-
-unpack name;
-unpack name_;
-unpack @name_;
-unpack nested.thing.yay;
+## 4.2 Renaming
+You can rename modules
+```lua
+unpack example as prod;
+```
+That can also be done to nested imports and multi imports
+```lua
+unpack example.module as prod;
+unpack example.module.nested { funcA as prod, funcB };
+```
