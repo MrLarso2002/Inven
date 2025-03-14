@@ -1,8 +1,8 @@
 // our parser ig for now
 peg::parser!{
   grammar inven_parser() for str {
-    pub rule import() -> (String, Option<String>)
-      = "unpack" __ module:module_identifier() _ modulechild:module_sub_identifier()? _ ";" { (module, modulechild) }
+    pub rule import() -> (String, Option<String>, bool)
+      = "unpack" __ pkg_manager:("box" ":")? module:module_identifier() _ modulechild:module_sub_identifier()? _ ";" { (module, modulechild, pkg_manager.is_some()) }
       pub rule importmin() -> String
         = "unpack" _ module:module_identifier() _ ";" { module }
 
@@ -39,8 +39,9 @@ mod tests {
   #[test]
   fn unpack() {
     // TODO: This should pass but currently it doesn't
-    let res = inven_parser::import("unpack module;").expect("Should be Ok");
-    assert_eq!(res.0, "module");
+    let res = inven_parser::import("unpack box: module.child;").expect("Should be Ok");
+    assert_eq!(res.0, "module.child");
     assert_eq!(res.1, None);
+    assert_eq!(res.2, true);
   }
 }
