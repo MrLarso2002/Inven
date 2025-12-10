@@ -19,10 +19,11 @@
 
 ## Numbers
 ```lua
-:num / :number -- A number, for quick implementation
+:num / :number -- A number, for quick implementation (alias of :float{64})
 :int{byte count}
 :uint{byte count}
 :float / :f {32, 64} -- 32 single precission, 64 double precission
+:bigint -- handles integers of arbitrary size, going beyond the limits of standard number types
 ```
 Byte count can be: 8, 16, 32, 64, 128
 
